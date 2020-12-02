@@ -64,8 +64,9 @@ body.shrink {
         min-height: 100%;
     }*/
 
-    .wrapper {
+    body > .wrapper {
         min-height: 100%;
+        min-height: 100vh;
         padding-bottom: $footer-size + $footer-bar-size + $grid-gutter-height /
             2;
 
@@ -154,8 +155,6 @@ body.shrink {
 }*/
 
 #MainContent {
-    padding-top: $grid-gutter-element-height;
-    padding-bottom: $grid-gutter-element-height;
 }
 
 #PageBreadcumbs {

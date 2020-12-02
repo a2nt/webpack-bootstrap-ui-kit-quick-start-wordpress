@@ -12,3 +12,18 @@
 .btn-primary {
 	color: #fff;
 }
+
+@import './_variables';
+@import './_elements';
+
+.btn-primary {
+	background: $primary;
+}
+
+.btn-danger {
+	background: $danger;
+}
+
+.btn-success {
+	background: $success;
+}

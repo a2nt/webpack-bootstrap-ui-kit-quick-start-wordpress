@@ -45,7 +45,7 @@ if (! function_exists('wp_bootstrap_starter_setup')) :
 
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus(array(
-        'primary' => esc_html__('Primary', 'wp-bootstrap-starter'),
+            'primary' => esc_html__('Primary', 'wp-bootstrap-starter'),
         ));
 
         /*
@@ -58,11 +58,12 @@ if (! function_exists('wp_bootstrap_starter_setup')) :
             'caption',
         ));
 
+        remove_theme_support('core-block-patterns');
         // Set up the WordPress core custom background feature.
-        add_theme_support('custom-background', apply_filters('wp_bootstrap_starter_custom_background_args', array(
+        /*add_theme_support('custom-background', apply_filters('wp_bootstrap_starter_custom_background_args', array(
             'default-color' => 'ffffff',
             'default-image' => '',
-        )));
+        )));*/
 
         // Add theme support for selective refresh for widgets.
         add_theme_support('customize-selective-refresh-widgets');
@@ -110,10 +111,27 @@ add_action('admin_notices', 'wp_bootstrap_starter_reminder');
  */
 function wp_bootstrap_starter_content_width()
 {
-    $GLOBALS['content_width'] = apply_filters('wp_bootstrap_starter_content_width', 1170);
+    $GLOBALS['content_width'] = apply_filters('wp_bootstrap_starter_content_width', 1155);
 }
 add_action('after_setup_theme', 'wp_bootstrap_starter_content_width', 0);
 
+function ResourcesURL()
+{
+	return get_template_directory_uri().'/client/dist';
+}
+
+function nl2li($str, $ordered = 0, $type = "1")
+{
+    if ($ordered) {
+        $tag='ol';
+        $tag_type="type=$type";
+    } else {
+        $tag = 'ul';
+        $tag_type = null;
+    }
+
+    return str_replace("\n", "</li><br />\n<li>", "<$tag $tag_type><li>" . $str ."</li></$tag>");
+}
 /**
  * Register widget area.
  *

@@ -1,0 +1,19 @@
+{
+	"name": "wp_bootstrap/learn_more",
+	"category": "design",
+	"attributes": {
+		"verticalAlignment": {
+			"type": "string"
+		}
+	},
+	"supports": {
+		"anchor": true,
+		"align": ["full"],
+		"html": false,
+		"lightBlockWrapper": true,
+		"__experimentalColor": {
+			"gradients": true,
+			"linkColor": true
+		}
+	}
+}

@@ -10,244 +10,196 @@
  *
  * @param WP_Customize_Manager $wp_customize Theme Customizer object.
  */
-function themeslug_sanitize_checkbox( $checked ) {
-    // Boolean check.
-    return ( ( isset( $checked ) && true == $checked ) ? true : false );
-}
-
-function wp_bootstrap_starter_customize_register( $wp_customize ) {
-
-    //Style Preset
-    $wp_customize->add_section(
-        'typography',
-        array(
-            'title' => __( 'Preset Styles', 'wp-bootstrap-starter' ),
-            //'description' => __( 'This is a section for the typography', 'wp-bootstrap-starter' ),
-            'priority' => 20,
-        )
-    );
-
-    //Theme Option
-    $wp_customize->add_setting( 'theme_option_setting', array(
-        'default'   => 'default',
-        'type'       => 'theme_mod',
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'wp_filter_nohtml_kses',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Control($wp_customize, 'theme_option_setting', array(
-        'label' => __( 'Theme Option', 'wp-bootstrap-starter' ),
-        'section'    => 'typography',
-        'settings'   => 'theme_option_setting',
-        'type'    => 'select',
-        'choices' => array(
-            'default' => 'Default',
-            'cerulean' => 'Cerulean',
-            'cosmo' => 'Cosmo',
-            'cyborg' => 'Cyborg',
-            'darkly' => 'Darkly',
-            'flatly' => 'Flatly',
-            'journal' => 'Journal',
-            'litera' => 'Litera',
-            'lumen' => 'Lumen',
-            'lux' => 'Lux',
-            'materia' => 'Materia',
-            'minty' => 'Minty',
-            'pulse' => 'Pulse',
-            'sandstone' => 'Sandstone',
-            'simplex' => 'Simplex',
-            'sketchy' => 'Sketchy',
-            'slate' => 'Slate',
-            'solar' => 'Solar',
-            'spacelab' => 'Spacelab',
-            'superhero' => 'Superhero',
-            'united' => 'United',
-            'yeti' => 'Yeti',
-        )
-    ) ) );
-
-    $wp_customize->add_setting( 'preset_style_setting', array(
-        'default'   => 'default',
-        'type'       => 'theme_mod',
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'wp_filter_nohtml_kses',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Control($wp_customize, 'preset_style_setting', array(
-        'label' => __( 'Typography', 'wp-bootstrap-starter' ),
-        'section'    => 'typography',
-        'settings'   => 'preset_style_setting',
-        'type'    => 'select',
-        'choices' => array(
-            'default' => 'Default',
-            'arbutusslab-opensans' => 'Arbutus Slab / Opensans',
-            'montserrat-merriweather' => 'Montserrat / Merriweather',
-            'montserrat-opensans' => 'Montserrat / Opensans',
-            'oswald-muli' => 'Oswald / Muli',
-            'poppins-lora' => 'Poppins / Lora',
-            'poppins-poppins' => 'Poppins / Poppins',
-            'roboto-roboto' => 'Roboto / Roboto',
-            'robotoslab-roboto' => 'Roboto Slab / Roboto',
-        )
-    ) ) );
-
-
-    /*Banner*/
-    $wp_customize->add_section(
-        'header_image',
-        array(
-            'title' => __( 'Header Banner', 'wp-bootstrap-starter' ),
-            'priority' => 30,
-        )
-    );
-
-
-    $wp_customize->add_control(
-        'header_img',
-        array(
-            'label' => __( 'Header Image', 'wp-bootstrap-starter' ),
-            'section' => 'header_images',
-            'type' => 'text',
-        )
-    );
-
-    $wp_customize->add_setting(
-        'header_bg_color_setting',
-        array(
-            'default'     => '#fff',
-            'sanitize_callback' => 'sanitize_hex_color',
-        )
-    );
-    $wp_customize->add_control(
-        new WP_Customize_Color_Control(
-            $wp_customize,
-            'header_bg_color',
-            array(
-                'label'      => __( 'Header Banner Background Color', 'wp-bootstrap-starter' ),
-                'section'    => 'header_image',
-                'settings'   => 'header_bg_color_setting',
-            ) )
-    );
-
-    $wp_customize->add_setting( 'header_banner_title_setting', array(
-        'default' => __( 'WP Bootstrap Framework', 'wp-bootstrap-starter' ),
-        'sanitize_callback' => 'wp_filter_nohtml_kses',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Control($wp_customize, 'header_banner_title_setting', array(
-        'label' => __( 'Banner Title', 'wp-bootstrap-starter' ),
-        'section'    => 'header_image',
-        'settings'   => 'header_banner_title_setting',
-        'type' => 'text'
-    ) ) );
-
-    $wp_customize->add_setting( 'header_banner_tagline_setting', array(
-        'default' => __( 'To customize the contents of this header banner and other elements of your site go to Dashboard - Appearance - Customize','wp-bootstrap-starter' ),
-        'sanitize_callback' => 'wp_filter_nohtml_kses',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Control($wp_customize, 'header_banner_tagline_setting', array(
-        'label' => __( 'Banner Tagline', 'wp-bootstrap-starter' ),
-        'section'    => 'header_image',
-        'settings'   => 'header_banner_tagline_setting',
-        'type' => 'text'
-    ) ) );
-    $wp_customize->add_setting( 'header_banner_visibility', array(
-        'capability' => 'edit_theme_options',
-        'sanitize_callback' => 'themeslug_sanitize_checkbox',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Control($wp_customize, 'header_banner_visibility', array(
-        'settings' => 'header_banner_visibility',
-        'label'    => __('Remove Header Banner', 'wp-bootstrap-starter'),
-        'section'    => 'header_image',
-        'type'     => 'checkbox',
-    ) ) );
-
-
-    //Site Name Text Color
-   $wp_customize->add_section(
-        'site_name_text_color',
-        array(
-            'title' => __( 'Other Customizations', 'wp-bootstrap-starter' ),
-            //'description' => __( 'This is a section for the header banner Image.', 'wp-bootstrap-starter' ),
-            'priority' => 40,
-        )
-    );
-    $wp_customize->add_section(
-        'colors',
-        array(
-            'title' => __( 'Background Color', 'wp-bootstrap-starter' ),
-            //'description' => __( 'This is a section for the header banner Image.', 'wp-bootstrap-starter' ),
-            'priority' => 50,
-            'panel' => 'styling_option_panel',
-        )
-    );
-    $wp_customize->add_section(
-        'background_image',
-        array(
-            'title' => __( 'Background Image', 'wp-bootstrap-starter' ),
-            //'description' => __( 'This is a section for the header banner Image.', 'wp-bootstrap-starter' ),
-            'priority' => 60,
-            'panel' => 'styling_option_panel',
-        )
-    );
-
-    // Bootstrap and Fontawesome Option
-    $wp_customize->add_setting( 'cdn_assets_setting', array(
-        'default' => __( 'no','wp-bootstrap-starter' ),
-        'sanitize_callback' => 'wp_filter_nohtml_kses',
-    ) );
-    $wp_customize->add_control( 
-        'cdn_assets',
-        array(
-            'label' => __( 'Use CDN for Assets', 'wp-bootstrap-starter' ),
-            'description' => __( 'All Bootstrap Assets and FontAwesome will be loaded in CDN.', 'wp-bootstrap-starter' ),
-            'section' => 'site_name_text_color',
-            'settings' => 'cdn_assets_setting',
-	        'type'    => 'select',
-	        'choices' => array(
-	            'yes' => __( 'Yes', 'wp-bootstrap-starter' ),
-	            'no' => __( 'No', 'wp-bootstrap-starter' ),
-        	)
-        )
-    );
-
-
-    $wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
-    $wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
-    $wp_customize->get_setting( 'header_textcolor' )->transport = 'refresh';
-    $wp_customize->get_control( 'header_textcolor'  )->section = 'site_name_text_color';
-    $wp_customize->get_control( 'background_image'  )->section = 'site_name_text_color';
-    $wp_customize->get_control( 'background_color'  )->section = 'site_name_text_color';
-
-    // Add control for logo uploader
-    $wp_customize->add_setting( 'wp_bootstrap_starter_logo', array(
-        //'default' => __( '', 'wp-bootstrap-starter' ),
-        'sanitize_callback' => 'esc_url',
-    ) );
-    $wp_customize->add_control( new WP_Customize_Image_Control( $wp_customize, 'wp_bootstrap_starter_logo', array(
-        'label'    => __( 'Upload Logo (replaces text)', 'wp-bootstrap-starter' ),
-        'section'  => 'title_tagline',
-        'settings' => 'wp_bootstrap_starter_logo',
-    ) ) );
-
-}
-add_action( 'customize_register', 'wp_bootstrap_starter_customize_register' );
-
-add_action( 'wp_head', 'wp_bootstrap_starter_customizer_css');
-function wp_bootstrap_starter_customizer_css()
-
+function themeslug_sanitize_checkbox($checked)
 {
-    $header_bg_color = get_theme_mod('header_bg_color_setting', '#fff');
+    // Boolean check.
+    return ( ( isset($checked) && true == $checked ) ? true : false );
+}
 
-    ?>
-    <style type="text/css">
-        #page-sub-header { background: <?php echo esc_attr( $header_bg_color ); ?>; }
-    </style>
-    <?php
+function addField($wp_customize, $name, $title, $options = [])
+{
+    $name = explode('.', $name);
+
+    $wp_customize->add_setting($name[1]);
+    $wp_customize->add_control(new WP_Customize_Control($wp_customize, $name[1], array_merge([
+        'label'    => $title,
+        'settings' => $name[1],
+        'section'    => $name[0],
+        'type'     => 'text',
+    ], $options)));
+}
+
+function wp_bootstrap_starter_customize_register($wp_customize)
+{
+    /*Banner*/
+    $wp_customize->add_section('header_image', [
+        'title' => __('Header Banner', 'wp-bootstrap-starter'),
+        'priority' => 30,
+    ]);
+
+
+    $wp_customize->add_control('header_img', [
+        'label' => __('Header Image', 'wp-bootstrap-starter'),
+        'section' => 'header_images',
+        'type' => 'text',
+    ]);
+
+    addField($wp_customize, 'header_image.header_banner_title_setting', 'Banner Title');
+    addField($wp_customize, 'header_image.header_banner_tagline_setting', 'Banner Tagline');
+    addField($wp_customize, 'header_image.header_banner_link_setting', 'Banner Link', ['type' => 'url']);
+    addField($wp_customize, 'header_image.header_banner_visibility', 'Remove Header Banner', ['type' => 'checkbox']);
+
+    // Home Blocks
+    $wp_customize->add_section('home_blocks', [
+        'title' => 'Home Blocks',
+        'priority' => 30,
+    ]);
+
+    // Block #1
+    addField($wp_customize, 'home_blocks.home_blocks_block1_title', 'Block #1 Title');
+    addField($wp_customize, 'home_blocks.home_blocks_block1_text', 'Block #1 Text', ['type' => 'textarea']);
+    addField($wp_customize, 'home_blocks.home_blocks_block1_link', 'Block #1 Link', ['type' => 'url']);
+
+    addField($wp_customize, 'home_blocks.home_blocks_block2_title', 'Block #2 Title');
+    addField($wp_customize, 'home_blocks.home_blocks_block2_text', 'Block #2 Text', ['type' => 'textarea']);
+    addField($wp_customize, 'home_blocks.home_blocks_block2_link', 'Block #2 Link', ['type' => 'url']);
+
+    $wp_customize->get_setting('blogname')->transport         = 'postMessage';
+    $wp_customize->get_setting('blogdescription')->transport  = 'postMessage';
+    $wp_customize->get_setting('header_textcolor')->transport = 'refresh';
+    $wp_customize->get_control('header_textcolor')->section = 'site_name_text_color';
+    $wp_customize->get_control('background_image')->section = 'site_name_text_color';
+    $wp_customize->get_control('background_color')->section = 'site_name_text_color';
+
+    addField($wp_customize, 'title_tagline.header_banner_callus_setting', 'Call us');
+}
+
+add_action('customize_register', 'wp_bootstrap_starter_customize_register');
+
+add_action('wp_head', 'wp_bootstrap_starter_customizer_css');
+function wp_bootstrap_starter_customizer_css()
+{
 }
 
 
 /**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.
  */
-function wp_bootstrap_starter_customize_preview_js() {
-    wp_enqueue_script( 'wp_bootstrap_starter_customizer', get_template_directory_uri() . '/inc/assets/js/customizer.js', array( 'customize-preview' ), '20151215', true );
+
+function wp_bootstrap_starter_customize_preview_js()
+{
+    wp_enqueue_script(
+        'wp_bootstrap_starter_customizer',
+        get_template_directory_uri() . '/inc/assets/js/customizer.js',
+        ['customize-preview'],
+        '20201126',
+        true
+    );
 }
-add_action( 'customize_preview_init', 'wp_bootstrap_starter_customize_preview_js' );
+add_action('customize_preview_init', 'wp_bootstrap_starter_customize_preview_js');
+
+/**
+ * Add custom blocks
+ */
+function wp_bootstrap_customize_blocks()
+{
+    wp_enqueue_script(
+        'gutenberg-notice-block-editor',
+        get_template_directory_uri() . '/inc/assets/js/custom-blocks.js',
+        ['wp-blocks', 'wp-element']
+    );
+
+    wp_enqueue_style(
+        'gutenberg-notice-block-editor',
+        get_template_directory_uri() . '/inc/assets/css/custom-blocks.css'
+    );
+
+    wp_enqueue_script(
+        'app-cms',
+        get_template_directory_uri() . '/client/dist/js/app_cms.js',
+	    false,
+        filemtime(get_template_directory().'/client/dist/js/app_cms.js')
+    );
+
+    wp_enqueue_style(
+        'app-cms',
+        get_template_directory_uri() . '/client/dist/css/app_cms.css',
+	    false,
+        filemtime(get_template_directory().'/client/dist/css/app_cms.css')
+    );
+}
+
+add_action('enqueue_block_editor_assets', 'wp_bootstrap_customize_blocks');
+
+function list_dir($path)
+{
+    return array_diff(scandir($path), ['.','..']);
+}
+
+function wp_bootstrap_register_custom_block_types()
+{
+    // from meta data
+    unregister_block_type('core/button');
+    unregister_block_type('core/buttons');
+
+    $block_folders = list_dir(get_template_directory(). '/inc/blocks');
+    foreach ($block_folders as $block_folder) {
+        register_block_type_from_metadata(
+            get_template_directory(). '/inc/blocks/' . $block_folder.'/block.json'
+        );
+    }
+
+    $core_block_patterns = list_dir(get_template_directory(). '/inc/block-patterns');
+
+    foreach ($core_block_patterns as $core_block_pattern) {
+        register_block_pattern(
+            'themed/' . $core_block_pattern,
+            require get_template_directory(). '/inc/block-patterns/' . $core_block_pattern
+        );
+    }
+
+    register_block_pattern_category('themed', ['label' => 'Design Patterns']);
+}
+add_action('init', 'wp_bootstrap_register_custom_block_types');
+
+if (in_array('advanced-bootstrap-blocks/advanced-bootstrap-blocks.php', apply_filters('active_plugins', get_option('active_plugins')))) {
+    // do stuff only if the Advanced Bootstrap Blocks plugin is active
+    add_action('init', 'advancedbootstrapblocks_register_page_template');
+    function advancedbootstrapblocks_register_page_template()
+    {
+        $post_type_object = get_post_type_object('page');
+        $isFluid = get_theme_mod('understrap_container_type') === 'container-fluid';
+
+        // default page template
+        $post_type_object->template = [
+            [ 'advanced-bootstrap-blocks/container',
+                ['className'=>'py-5', 'isWrapped' => $isFluid, 'isFluid' => false ],
+                [
+                    [ 'advanced-bootstrap-blocks/row',
+                        [],
+                        [
+                            [ 'advanced-bootstrap-blocks/column',
+                                ['className'=>'col-md-8 offset-md-2 text-center'],
+                                [
+                                    ['core/heading',
+                                        [ 'className' => 'display-4', 'level' => 1, 'placeholder' => 'Hello, World!', ],
+                                        []
+                                    ],
+                                    [ 'core/paragraph',
+                                        ['className' => 'lead', 'placeholder' => 'Lorem ipsum dolor sit amet.', ],
+                                        []
+                                    ],
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ],
+        ];
+    }
+}
+
+/*function bt_custom_button_classes( $classes, $attributes ) {
+    return [ 'btn btn-primary', 'btn btn-warning', 'btn btn-danger', 'btn btn-secondary' ];
+}
+add_filter( 'wp_bootstrap_blocks_button_classes', 'bt_custom_button_classes', 10, 2 );*/
