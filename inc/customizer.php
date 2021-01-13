@@ -164,7 +164,6 @@ add_action('init', 'wp_bootstrap_register_custom_block_types');
 
 if (in_array('advanced-bootstrap-blocks/advanced-bootstrap-blocks.php', apply_filters('active_plugins', get_option('active_plugins')))) {
     // do stuff only if the Advanced Bootstrap Blocks plugin is active
-    add_action('init', 'advancedbootstrapblocks_register_page_template');
     function advancedbootstrapblocks_register_page_template()
     {
         $post_type_object = get_post_type_object('page');
@@ -172,31 +171,18 @@ if (in_array('advanced-bootstrap-blocks/advanced-bootstrap-blocks.php', apply_fi
 
         // default page template
         $post_type_object->template = [
-            [ 'advanced-bootstrap-blocks/container',
-                ['className'=>'py-5', 'isWrapped' => $isFluid, 'isFluid' => false ],
-                [
-                    [ 'advanced-bootstrap-blocks/row',
-                        [],
-                        [
-                            [ 'advanced-bootstrap-blocks/column',
-                                ['className'=>'col-md-8 offset-md-2 text-center'],
-                                [
-                                    ['core/heading',
-                                        [ 'className' => 'display-4', 'level' => 1, 'placeholder' => 'Hello, World!', ],
-                                        []
-                                    ],
-                                    [ 'core/paragraph',
-                                        ['className' => 'lead', 'placeholder' => 'Lorem ipsum dolor sit amet.', ],
-                                        []
-                                    ],
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+            ['core/heading',
+                [ 'className' => 'display-4', 'level' => 1, 'placeholder' => 'Hello, World!', ],
+                []
+            ],
+            [ 'core/paragraph',
+                ['className' => 'lead', 'placeholder' => 'Lorem ipsum dolor sit amet.', ],
+                []
             ],
         ];
     }
+
+    add_action('init', 'advancedbootstrapblocks_register_page_template');
 }
 
 /*function bt_custom_button_classes( $classes, $attributes ) {

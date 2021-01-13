@@ -18,16 +18,22 @@
 	</div><!-- #content -->
     <?php get_template_part( 'footer-widget' ); ?>
 	<footer id="Footer" class="site-footer footer <?php echo wp_bootstrap_starter_bg_class(); ?>" role="contentinfo">
-		<div class="container pt-3 pb-3">
-            <div class="site-info">
-                &copy; <?php echo date('Y'); ?> <?php echo '<a href="'.home_url().'">'.get_bloginfo('name').'</a>'; ?>
-                <span class="sep"> | </span>
-                <a class="credits" href="https://github.com/a2nt/webpack-bootstrap-ui-kit-quick-start-wordpress" target="_blank" title="Bootstrap UI Kit Technical Support">
-                    <?php echo esc_html__('Bootstrap UI Kit Wordpress Theme','wp-bootstrap-starter'); ?>
-                </a>
-
+        <div class="wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <?= get_bloginfo('name') ?><br/>
+                        206 Sedgwick Dr., Syracuse, NY 13203<br/>
+                        <b>1-888-428-6249 • 315-423-3055</b><br/>
+                        <a class="mailto" href="mailto:info@atmsystems.biz" target="_blank">info@ATMSystems.biz</a>
+                    </div>
+                    <div class="col-md-6 text-right site-info">
+                        &copy; <?= date('Y') ?> <?= '<a href="'.home_url().'" class="home-link">'.get_bloginfo('name').'</a>' ?>
+                    </div>
+                </div>
             </div>
-		</div>
+        </div>
+        <div class="footer">&nbsp;</div>
 	</footer>
 <?php endif; ?>
 

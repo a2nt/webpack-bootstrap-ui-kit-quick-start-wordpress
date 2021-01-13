@@ -7,6 +7,8 @@
  * @package WP_Bootstrap_Starter
  */
 
+define('CRB_THEME_DIR', get_template_directory() . DIRECTORY_SEPARATOR);
+
 if (! function_exists('wp_bootstrap_starter_setup')) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -17,90 +19,101 @@ if (! function_exists('wp_bootstrap_starter_setup')) :
  */
     function wp_bootstrap_starter_setup()
     {
+        // Autoload dependencies
+        $autoload_dir = CRB_THEME_DIR . 'vendor/autoload.php';
+        if (! is_readable($autoload_dir)) {
+            wp_die(__('Please, run <code>composer install</code> to download and install the theme dependencies.', 'crb'));
+        }
+
+        require_once(CRB_THEME_DIR . 'vendor/autoload.php');
+        \Carbon_Fields\Carbon_Fields::boot();
+
+
+        // Additional libraries and includes
+        require_once(CRB_THEME_DIR . 'inc/admin-login.php');
+        require_once(CRB_THEME_DIR . 'inc/blocks.php');
+        require_once(CRB_THEME_DIR . 'inc/boot-blocks.php');
+        require_once(CRB_THEME_DIR . 'inc/comments.php');
+        require_once(CRB_THEME_DIR . 'inc/title.php');
+        require_once(CRB_THEME_DIR . 'inc/gravity-forms.php');
+        require_once(CRB_THEME_DIR . 'inc/utils.php');
+        require_once(CRB_THEME_DIR . 'inc/CrbSocials.php');
+
         /*
          * Make theme available for translation.
          * Translations can be filed in the /languages/ directory.
          * If you're building a theme based on WP Bootstrap Starter, use a find and replace
          * to change 'wp-bootstrap-starter' to the name of your theme in all the template files.
          */
-        load_theme_textdomain('wp-bootstrap-starter', get_template_directory() . '/languages');
+        load_theme_textdomain('wp-bootstrap-starter', CRB_THEME_DIR . 'languages');
 
-        // Add default posts and comments RSS feed links to head.
-        add_theme_support('automatic-feed-links');
-
-        /*
-         * Let WordPress manage the document title.
-         * By adding theme support, we declare that this theme does not use a
-         * hard-coded <title> tag in the document head, and expect WordPress to
-         * provide it for us.
-         */
-        add_theme_support('title-tag');
-
-        /*
-         * Enable support for Post Thumbnails on posts and pages.
-         *
-         * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
-         */
-        add_theme_support('post-thumbnails');
 
         // This theme uses wp_nav_menu() in one location.
         register_nav_menus(array(
             'primary' => esc_html__('Primary', 'wp-bootstrap-starter'),
         ));
 
-        /*
-         * Switch default core markup for search form, comment form, and comments
-         * to output valid HTML5.
-         */
+        // theme supports
+        add_theme_support('automatic-feed-links');
+        add_theme_support('title-tag');
+        add_theme_support('post-thumbnails');
         add_theme_support('html5', array(
             'comment-form',
             'comment-list',
             'caption',
         ));
-
         remove_theme_support('core-block-patterns');
-        // Set up the WordPress core custom background feature.
-        /*add_theme_support('custom-background', apply_filters('wp_bootstrap_starter_custom_background_args', array(
-            'default-color' => 'ffffff',
-            'default-image' => '',
-        )));*/
-
-        // Add theme support for selective refresh for widgets.
         add_theme_support('customize-selective-refresh-widgets');
+        add_theme_support('yoast-seo-breadcrumbs');
+
+        // Attach custom shortcodes
+        require_once(CRB_THEME_DIR . 'opts/shortcodes.php');
+
+        // Add Actions
+        add_action('carbon_fields_register_fields', 'crb_attach_theme_options');
 
         function wp_boostrap_starter_add_editor_styles()
         {
             add_editor_style('client/dist/css/app_editor.css');
         }
         add_action('admin_init', 'wp_boostrap_starter_add_editor_styles');
+
+        // Add Filters
+        add_filter('excerpt_more', 'crb_excerpt_more');
+        add_filter('excerpt_length', 'crb_excerpt_length', 999);
+        /*add_filter('crb_theme_favicon_uri', function () {
+            return get_template_directory_uri() . '/client/dist/images/favicon.ico';
+        });*/
+        add_filter('carbon_fields_map_field_api_key', 'crb_get_google_maps_api_key');
     }
 endif;
 add_action('after_setup_theme', 'wp_bootstrap_starter_setup');
 
 
-/**
- * Add Welcome message to dashboard
- */
-function wp_bootstrap_starter_reminder()
+function crb_attach_theme_options()
 {
-        $theme_page_url = 'https://afterimagedesigns.com/wp-bootstrap-starter/?dashboard=1';
-
-    if (!get_option('triggered_welcomet')) {
-        $message = sprintf(
-            __('Welcome to WP Bootstrap Starter Theme! Before diving in to your new theme, please visit the <a style="color: #fff; font-weight: bold;" href="%1$s" target="_blank">theme\'s</a> page for access to dozens of tips and in-depth tutorials.', 'wp-bootstrap-starter'),
-            esc_url($theme_page_url)
-        );
-
-        printf(
-            '<div class="notice is-dismissible" style="background-color: #6C2EB9; color: #fff; border-left: none;">
-                        <p>%1$s</p>
-                    </div>',
-            $message
-        );
-        add_option('triggered_welcomet', '1', '', 'yes');
-    }
+    # Attach fields
+    require_once(CRB_THEME_DIR . 'opts/theme-options.php');
+    require_once(CRB_THEME_DIR . 'opts/post-meta.php');
+    require_once(CRB_THEME_DIR . 'opts/blocks.php');
 }
-add_action('admin_notices', 'wp_bootstrap_starter_reminder');
+
+function crb_excerpt_more()
+{
+    return '...';
+}
+
+function crb_excerpt_length()
+{
+    return 55;
+}
+
+function crb_get_google_maps_api_key()
+{
+    return carbon_get_theme_option('crb_google_maps_api_key');
+}
+
+add_filter('carbon_fields_map_field_api_key', 'crb_get_google_maps_api_key');
 
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
@@ -117,7 +130,7 @@ add_action('after_setup_theme', 'wp_bootstrap_starter_content_width', 0);
 
 function ResourcesURL()
 {
-	return get_template_directory_uri().'/client/dist';
+    return get_template_directory_uri().'/client/dist';
 }
 
 function nl2li($str, $ordered = 0, $type = "1")
@@ -203,13 +216,13 @@ function wp_bootstrap_starter_scripts()
         'wp-bootstrap-starter-'.get_theme_mod('preset_color_scheme_setting'),
         get_template_directory_uri() . '/client/dist/css/app.css',
         false,
-        filemtime(get_template_directory().'/client/dist/js/app.js')
+        filemtime(CRB_THEME_DIR.'client/dist/css/app.css')
     );
     wp_enqueue_script(
         'wp-bootstrap-starter-themejs',
         get_template_directory_uri() . '/client/dist/js/app.js',
         array(),
-        filemtime(get_template_directory().'/client/dist/js/app.js'),
+        filemtime(CRB_THEME_DIR.'client/dist/js/app.js'),
         true
     );
 
@@ -259,31 +272,44 @@ add_filter('the_password_form', 'wp_bootstrap_starter_password_form');
 /**
  * Implement the Custom Header feature.
  */
-require get_template_directory() . '/inc/custom-header.php';
+require CRB_THEME_DIR . 'inc/custom-header.php';
 
 /**
  * Custom template tags for this theme.
  */
-require get_template_directory() . '/inc/template-tags.php';
+require CRB_THEME_DIR . 'inc/template-tags.php';
 
 /**
  * Custom functions that act independently of the theme templates.
  */
-require get_template_directory() . '/inc/extras.php';
+require CRB_THEME_DIR . 'inc/extras.php';
 
 /**
  * Customizer additions.
  */
-require get_template_directory() . '/inc/customizer.php';
+require CRB_THEME_DIR . 'inc/customizer.php';
 
 /**
  * Load plugin compatibility file.
  */
-require get_template_directory() . '/inc/plugin-compatibility/plugin-compatibility.php';
+require CRB_THEME_DIR . 'inc/plugin-compatibility/plugin-compatibility.php';
 
 /**
  * Load custom WordPress nav walker.
  */
 if (! class_exists('wp_bootstrap_navwalker')) {
-    require_once(get_template_directory() . '/inc/wp_bootstrap_navwalker.php');
+    require_once(CRB_THEME_DIR . 'inc/wp_bootstrap_navwalker.php');
+}
+
+remove_filter('the_content', 'wpautop');
+add_filter('the_content', 'crb_fix_empty_paragraphs_in_blocks');
+function crb_fix_empty_paragraphs_in_blocks($content)
+{
+    global $wp_version;
+
+    if (version_compare($wp_version, '5.2', '<') && has_blocks()) {
+        return $content;
+    }
+
+    return wpautop($content);
 }

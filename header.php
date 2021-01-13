@@ -18,9 +18,23 @@
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <?php wp_head(); ?>
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-NWJG3W7');</script>
+<!-- End Google Tag Manager -->
+
 </head>
 
 <body <?php body_class(); ?>>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NWJG3W7"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 
 <?php
 
@@ -51,33 +65,35 @@ if (function_exists('wp_body_open')) {
                     </div>
                     <div class="col-sm-6 text-right">
                         <h3 class="slogan"><?= esc_attr(get_bloginfo('description')) ?></h3>
-                        <h2 class="call-us"><?= get_theme_mod('header_banner_callus_setting') ?></h2>
+                        <?php if (get_theme_mod('header_banner_callus_setting')) {?>
+                        <h2 class="call-us">Call <b><?= get_theme_mod('header_banner_callus_setting') ?></b></h2>
+                        <?php } ?>
                     </div>
                 </div>
             </div>
         </div>
-        <nav id="Navigation" class="navbar navbar-expand-xl p-0">
+        <nav id="Navigation" class="navbar navbar-expand-md p-0">
             <div class="container">
                 <button
                     class="navbar-toggler" type="button"
                     data-toggle="collapse" data-target="#main-nav" aria-controls=""
                     aria-expanded="false" aria-label="Toggle navigation"
                 >
-                    <span class="navbar-toggler-icon"></span>
+                    <span class="fas fa-bars navbar-toggler-icon"></span>
                 </button>
 
                 <?php
-                wp_nav_menu(array(
-                'theme_location'    => 'primary',
-                'container'       => 'div',
-                'container_id'    => 'main-nav',
-                'container_class' => 'collapse navbar-collapse',
-                'menu_id'         => false,
-                'menu_class'      => 'navbar-nav',
-                'depth'           => 3,
-                'fallback_cb'     => 'wp_bootstrap_navwalker::fallback',
-                'walker'          => new wp_bootstrap_navwalker()
-                ));
+                wp_nav_menu([
+                    'theme_location'    => 'primary',
+                    'container'       => 'div',
+                    'container_id'    => 'main-nav',
+                    'container_class' => 'collapse navbar-collapse',
+                    'menu_id'         => false,
+                    'menu_class'      => 'navbar-nav',
+                    'depth'           => 3,
+                    'fallback_cb'     => 'wp_bootstrap_navwalker::fallback',
+                    'walker'          => new wp_bootstrap_navwalker()
+                ]);
                 ?>
             </div>
         </nav>
@@ -105,7 +121,7 @@ if (function_exists('wp_body_open')) {
                                         class="btn btn-danger"
                                         target="_blank"
                                 >
-                                    Shop ATMs
+                                    SHOP ATMs
                                 </a>
                             <?php endif; ?>
                         </div>
