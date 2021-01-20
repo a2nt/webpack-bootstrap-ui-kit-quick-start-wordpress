@@ -1,203 +1,228 @@
-const SOURCEDIR = './src';
+/*
+ * Production assets generation
+ */
 const COMPRESS = true;
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
-const path = require('path');
-const filesystem = require('fs');
+const commonVariables = require('./webpack.configuration');
+const conf = commonVariables.configuration;
+const { merge } = require('webpack-merge');
+const common = require('./webpack.config.common.js');
 
-const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const filesystem = require('fs');
+const path = require('path');
+
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 
 const TerserPlugin = require('terser-webpack-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const ImageminPlugin = require('imagemin-webpack');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+
+const ImageminPlugin = require('image-minimizer-webpack-plugin');
 const ImageSpritePlugin = require('@a2nt/image-sprite-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const UIInfo = require('./package.json');
 const UIMetaInfo = require('./node_modules/@a2nt/meta-lightbox/package.json');
+const UIVERSION = JSON.stringify(UIInfo.version);
 
-const plugins = [
+console.log('WebP images: ' + conf['webp']);
+
+let plugins = [
+	new webpack.ProvidePlugin({
+		$: 'jquery',
+		jQuery: 'jquery',
+		Popper: ['popper.js', 'default'],
+		Util: 'exports-loader?Util!bootstrap/js/dist/util',
+		Alert: 'exports-loader?Alert!bootstrap/js/dist/alert',
+		Button: 'exports-loader?Button!bootstrap/js/dist/button',
+		Carousel: 'exports-loader?Carousel!bootstrap/js/dist/carousel',
+		Collapse: 'exports-loader?Collapse!bootstrap/js/dist/collapse',
+		Dropdown: 'exports-loader?Dropdown!bootstrap/js/dist/dropdown',
+		Modal: 'exports-loader?Modal!bootstrap/js/dist/modal',
+		Tooltip: 'exports-loader?Tooltip!bootstrap/js/dist/tooltip',
+		Popover: 'exports-loader?Popover!bootstrap/js/dist/popover',
+		Scrollspy: 'exports-loader?Scrollspy!bootstrap/js/dist/scrollspy',
+		Tab: 'exports-loader?Tab!bootstrap/js/dist/tab',
+	}),
 	new webpack.DefinePlugin({
 		'process.env': {
 			NODE_ENV: JSON.stringify('production'),
 		},
-	}),
-	new HardSourceWebpackPlugin(),
-	new webpack.LoaderOptionsPlugin({
-		minimize: COMPRESS,
-		debug: false,
-	}),
-	new MiniCssExtractPlugin({
-		filename: 'css/[name].css',
-		allChunks: true,
-	}),
-	/**/
-	new HtmlWebpackPlugin({
-		template: './src/index.html',
-	}),
-	new webpack.DefinePlugin({
 		UINAME: JSON.stringify(UIInfo.name),
-		UIVERSION: JSON.stringify(UIInfo.version),
+		UIVERSION: UIVERSION,
 		UIAUTHOR: JSON.stringify(UIInfo.author),
 		UIMetaNAME: JSON.stringify(UIMetaInfo.name),
 		UIMetaVersion: JSON.stringify(UIMetaInfo.version),
 	}),
+	new webpack.LoaderOptionsPlugin({
+		minimize: true,
+		debug: false,
+	}),
+	new MiniCssExtractPlugin({
+		filename: 'css/[name].css',
+		//allChunks: true,
+	}),
+	new OptimizeCssAssetsPlugin({
+		//assetNameRegExp: /\.optimize\.css$/g,
+		cssProcessor: require('cssnano'),
+		cssProcessorPluginOptions: {
+			preset: ['default'],
+		},
+		cssProcessorOptions: {
+			zindex: true,
+			cssDeclarationSorter: true,
+			reduceIdents: false,
+			mergeIdents: true,
+			mergeRules: true,
+			mergeLonghand: true,
+			discardUnused: true,
+			discardOverridden: true,
+			discardDuplicates: true,
+			discardComments: {
+				removeAll: true,
+			},
+		},
+		canPrint: true,
+	}),
+	require('autoprefixer'),
+	new ImageminPlugin({
+		minimizerOptions: {
+			// Lossless optimization with custom option
+			// Feel free to experiment with options for better result for you
+			plugins: [
+				['gifsicle', { interlaced: true }],
+				['jpegtran', { progressive: true }],
+				['optipng', { optimizationLevel: 5 }],
+				[
+					'svgo',
+					{
+						plugins: [
+							{
+								removeViewBox: false,
+							},
+						],
+					},
+				],
+			],
+		},
+	}),
+	new ImageSpritePlugin({
+		exclude: /exclude|original|default-|icons|sprite|svg|logo|favicon/,
+		commentOrigin: false,
+		compress: COMPRESS,
+		extensions: ['png'],
+		indent: '',
+		log: true,
+		//outputPath: path.join(__dirname, conf.APPDIR, conf.DIST),
+		outputFilename: 'img/sprite-[hash].png',
+		padding: 0,
+	}),
 ];
 
-if (COMPRESS) {
+const indexPath = path.join(__dirname, conf.APPDIR, conf.SRC, 'index.html');
+if (filesystem.existsSync(indexPath)) {
 	plugins.push(
-		new OptimizeCssAssetsPlugin({
-			//assetNameRegExp: /\.optimize\.css$/g,
-			cssProcessor: require('cssnano'),
-			cssProcessorPluginOptions: {
-				preset: ['default'],
-			},
-			cssProcessorOptions: {
-				zindex: true,
-				cssDeclarationSorter: true,
-				reduceIdents: false,
-				mergeIdents: true,
-				mergeRules: true,
-				mergeLonghand: true,
-				discardUnused: true,
-				discardOverridden: true,
-				discardDuplicates: true,
-				discardComments: {
-					removeAll: true,
-				},
-			},
-			canPrint: true,
-		}),
-	);
-	plugins.push(require('autoprefixer'));
-
-	plugins.push(
-		new ImageminPlugin({
-			bail: false, // Ignore errors on corrupted images
-			cache: true,
-			filter: (source, sourcePath) => {
-				if (source.byteLength < 512000) {
-					return false;
-				}
-
-				return true;
-			},
-			imageminOptions: {
-				plugins: [
-					['gifsicle', { interlaced: true }],
-					['jpegtran', { progressive: true }],
-					['optipng', { optimizationLevel: 5 }],
-					[
-						'svgo',
-						{
-							plugins: [
-								{
-									removeViewBox: false,
-								},
-							],
-						},
-					],
-				],
-			},
-		}),
-	);
-
-	plugins.push(
-		new ImageSpritePlugin({
-			exclude: /exclude|original|default-|icons|sprite/,
-			commentOrigin: false,
-			compress: true,
-			extensions: ['png'],
-			indent: '',
-			log: true,
-			//outputPath: path.join(__dirname, conf.APPDIR, conf.DIST),
-			outputFilename: 'img/sprite-[hash].png',
-			padding: 0,
+		new HtmlWebpackPlugin({
+			publicPath: '',
+			template: path.join(conf.APPDIR, conf.SRC, 'index.html'),
 		}),
 	);
 }
 
-const includes = {};
+const faviconPath = path.join(__dirname, conf.APPDIR, conf.SRC, 'favicon.png');
+if (filesystem.existsSync(faviconPath)) {
+	plugins.push(
+		new FaviconsWebpackPlugin({
+			title: 'Webpack App',
+			logo: faviconPath,
+			prefix: '/icons/',
+			emitStats: false,
+			persistentCache: true,
+			inject: false,
+			statsFilename: path.join(
+				conf.APPDIR,
+				conf.DIST,
+				'icons',
+				'iconstats.json',
+			),
+			icons: {
+				android: true,
+				appleIcon: true,
+				appleStartup: true,
+				coast: true,
+				favicons: true,
+				firefox: true,
+				opengraph: true,
+				twitter: true,
+				yandex: true,
+				windows: true,
+			},
+		}),
+	);
+}
 
-const _addAppFiles = (theme) => {
-	const dirPath = path.resolve(__dirname, theme);
-	const themeName = path.basename(theme);
-
-	if (filesystem.existsSync(path.join(dirPath, 'js', 'app.js'))) {
-		includes['app'] = path.join(dirPath, 'js', 'app.js');
-	} else if (filesystem.existsSync(path.join(dirPath, 'scss', 'app.scss'))) {
-		includes['app'] = path.join(dirPath, 'scss', 'app.scss');
+// add themes favicons
+commonVariables.themes.forEach((theme) => {
+	const faviconPath = path.join(__dirname, theme, conf.SRC, 'favicon.png');
+	if (filesystem.existsSync(faviconPath)) {
+		plugins.push(
+			new FaviconsWebpackPlugin({
+				title: 'Webpack App',
+				logo: faviconPath,
+				prefix: '/' + theme + '-icons/',
+				emitStats: false,
+				persistentCache: true,
+				inject: false,
+				statsFilename: path.join(
+					conf.APPDIR,
+					conf.DIST,
+					theme + '-icons',
+					'iconstats.json',
+				),
+				icons: {
+					android: true,
+					appleIcon: true,
+					appleStartup: true,
+					coast: true,
+					favicons: true,
+					firefox: true,
+					opengraph: true,
+					twitter: true,
+					yandex: true,
+					windows: true,
+				},
+			}),
+		);
 	}
+});
 
-	const _getAllFilesFromFolder = function (dir, includeSubFolders = true) {
-		const dirPath = path.resolve(__dirname, dir);
-		let results = [];
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+	.BundleAnalyzerPlugin;
+plugins.push(
+	new BundleAnalyzerPlugin({
+		analyzerMode: 'static',
+	}),
+);
 
-		filesystem.readdirSync(dirPath).forEach((file) => {
-			if (file.charAt(0) === '_') {
-				return;
-			}
-
-			const filePath = path.join(dirPath, file);
-			const stat = filesystem.statSync(filePath);
-
-			if (stat && stat.isDirectory() && includeSubFolders) {
-				results = results.concat(
-					_getAllFilesFromFolder(filePath, includeSubFolders),
-				);
-			} else {
-				results.push(filePath);
-			}
-		});
-
-		return results;
-	};
-
-	// add page specific scripts
-	const typesJSPath = path.join(theme, 'js/types');
-	if (filesystem.existsSync(typesJSPath)) {
-		const pageScripts = _getAllFilesFromFolder(typesJSPath, true);
-		pageScripts.forEach((file) => {
-			includes[`app_${path.basename(file, '.js')}`] = file;
-		});
-	}
-
-	// add page specific scss
-	const typesSCSSPath = path.join(theme, 'scss/types');
-	if (filesystem.existsSync(typesSCSSPath)) {
-		const scssIncludes = _getAllFilesFromFolder(typesSCSSPath, true);
-		scssIncludes.forEach((file) => {
-			includes[`app_${path.basename(file, '.scss')}`] = file;
-		});
-	}
-};
-
-_addAppFiles(SOURCEDIR);
-
-module.exports = {
-	entry: includes,
-	output: {
-		path: path.resolve(__dirname, 'dist'),
-		filename: path.join('js', '[name].js'),
-		publicPath: path.resolve(__dirname, 'dist'),
+const cfg = merge(common, {
+	mode: 'production',
+	cache: {
+		type: 'filesystem',
 	},
-	devtool: COMPRESS ? '' : 'source-map',
-	externals: {
-		jquery: 'jQuery',
-	},
+	recordsPath: path.join(__dirname, conf.APPDIR, conf.DIST, 'records.json'),
 	optimization: {
-		namedModules: true, // NamedModulesPlugin()
+		//removeAvailableModules: false,
+		//realContentHash: false,
 		splitChunks: {
-			// CommonsChunkPlugin()
 			name: 'vendor',
 			minChunks: 2,
 		},
-		noEmitOnErrors: true, // NoEmitOnErrorsPlugin
 		concatenateModules: true, //ModuleConcatenationPlugin
 		minimizer: [
 			new TerserPlugin({
 				terserOptions: {
+					module: false,
 					parse: {
 						// we want terser to parse ecma 8 code. However, we don't want it
 						// to apply any minfication steps that turns valid ecma 5 code
@@ -215,8 +240,14 @@ module.exports = {
 						// https://github.com/mishoo/UglifyJS2/issues/2011
 						comparisons: false,
 					},
+					keep_fnames: true,
+					keep_classnames: true,
+
 					mangle: {
 						safari10: true,
+						keep_fnames: true,
+						keep_classnames: true,
+						reserved: ['$', 'jQuery', 'jquery'],
 					},
 					output: {
 						ecma: 5,
@@ -229,11 +260,16 @@ module.exports = {
 				// Use multi-process parallel running to improve the build speed
 				// Default number of concurrent runs: os.cpus().length - 1
 				parallel: true,
-				// Enable file caching
-				cache: true,
 			}),
 		],
 	},
+
+	output: {
+		publicPath: path.join(conf.APPDIR, conf.DIST),
+		path: path.join(__dirname, conf.APPDIR, conf.DIST),
+		filename: path.join('js', '[name].js'),
+	},
+
 	module: {
 		rules: [
 			{
@@ -243,28 +279,10 @@ module.exports = {
 					loader: 'babel-loader',
 					options: {
 						presets: ['@babel/preset-env'], //Preset used for env setup
-						plugins: [
-							['@babel/transform-react-jsx'],
-							['react-hot-loader/babel'],
-						],
+						plugins: [['@babel/transform-react-jsx']],
 						cacheDirectory: true,
-						cacheCompression: false,
+						cacheCompression: true,
 					},
-				},
-			},
-			/*{
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
-      {
-        test: /\.coffee?$/,
-        use: 'coffee-loader',
-      },*/
-			{
-				test: /\.worker\.js$/,
-				use: {
-					loader: 'worker-loader',
 				},
 			},
 			{
@@ -275,12 +293,6 @@ module.exports = {
 					},
 					{
 						loader: 'css-loader',
-						options: {
-							sourceMap: !COMPRESS,
-						},
-					},
-					{
-						loader: 'postcss-loader',
 						options: {
 							sourceMap: !COMPRESS,
 						},
@@ -323,46 +335,32 @@ module.exports = {
 				],
 			},
 			{
-				test: /\.(png|jpg|jpeg|gif|svg)$/,
-				loader: 'file-loader',
-				options: {
-					name: '[name].[ext]',
-					outputPath: 'img/',
-					publicPath: '../img/',
-				},
+				test: /\.(png|webp|jpg|jpeg|gif|svg)$/,
+				use: [
+					{
+						loader: 'img-optimize-loader',
+						options: {
+							name: '[name].[ext]',
+							outputPath: 'img/',
+							publicPath: '../img/',
+							compress: {
+								// This will take more time and get smaller images.
+								mode: 'low', // 'lossless', 'high', 'low'
+								disableOnDevelopment: true,
+								webp: conf['webp'],
+							},
+							inline: {
+								limit: 1,
+							},
+						},
+					},
+				],
 			},
 		],
 	},
-	resolve: {
-		modules: [
-			path.resolve(__dirname, 'src'),
-			path.resolve(__dirname, 'node_modules'),
-		],
-		alias: {
-			jquery: require.resolve('jquery'),
-			jQuery: require.resolve('jquery'),
-		},
-	},
-	plugins: plugins,
 
-	devServer: {
-		host: '127.0.0.1',
-		port: 8001,
-		historyApiFallback: true,
-		hot: false,
-		clientLogLevel: 'info',
-		contentBase: [
-			path.resolve(__dirname, 'src'),
-			path.resolve(__dirname, 'node_modules'),
-			path.resolve(__dirname, 'dist'),
-		],
-		//watchContentBase: true,
-		overlay: {
-			warnings: true,
-			errors: true,
-		},
-		headers: {
-			'Access-Control-Allow-Origin': '*',
-		},
-	},
-};
+	plugins: plugins,
+});
+
+console.log(cfg);
+module.exports = cfg;

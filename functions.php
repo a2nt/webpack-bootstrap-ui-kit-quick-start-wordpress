@@ -81,9 +81,9 @@ if (! function_exists('wp_bootstrap_starter_setup')) :
         // Add Filters
         add_filter('excerpt_more', 'crb_excerpt_more');
         add_filter('excerpt_length', 'crb_excerpt_length', 999);
-        /*add_filter('crb_theme_favicon_uri', function () {
-            return get_template_directory_uri() . '/client/dist/images/favicon.ico';
-        });*/
+        add_filter('crb_theme_favicon_uri', function () {
+            return get_template_directory_uri() . '/client/dist/icons/favicon.ico';
+        });
         add_filter('carbon_fields_map_field_api_key', 'crb_get_google_maps_api_key');
     }
 endif;
