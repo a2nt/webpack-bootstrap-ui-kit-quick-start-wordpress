@@ -2,7 +2,7 @@
  * Common Environment
  */
 
-const INDEX_NAME = '';
+const INDEX_NAME = 'app';
 const YML_PATH = './webpack.yml';
 const CONF_VAR = 'A2nt\\CMSNiceties\\Templates\\WebpackTemplateProvider';
 

@@ -50,6 +50,7 @@
   ],
   "chunks": {
     "byName": {
+      "app": 143,
       "app_SilverShop.Page.CheckoutPageController": 193,
       "app_Site.Controllers.MapElementController": 133,
       "app_cms": 498,
@@ -58,6 +59,7 @@
       "app_order": 299
     },
     "bySource": {
+      "0 app": 143,
       "0 app_SilverShop.Page.CheckoutPageController": 193,
       "0 app_Site.Controllers.MapElementController": 133,
       "0 app_cms": 498,
@@ -67,6 +69,7 @@
     },
     "usedIds": [
       133,
+      143,
       193,
       206,
       299,
@@ -76,22 +79,34 @@
   },
   "modules": {
     "byIdentifier": {
+      "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./node_modules/.pnpm/@a2nt+ss-bootstrap-ui-webpack-boilerplate-react@5.2.3_debug@4.3.4_zone.js@0.14.3/node_modules/@a2nt/ss-bootstrap-ui-webpack-boilerplate-react/src/js/main/funcs.js": 625,
       "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./node_modules/.pnpm/fast-deep-equal@3.1.3/node_modules/fast-deep-equal/index.js": 318,
+      "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./node_modules/.pnpm/youtube-embed@1.0.0/node_modules/youtube-embed/index.js": 778,
+      "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./src/js/app.js|6e5777636c099729509edfcedce29966": 654,
       "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./src/js/types/SilverShop.Page.CheckoutPageController.js": 502,
       "./node_modules/.pnpm/babel-loader@9.1.3_@babel+core@7.23.7_webpack@5.89.0/node_modules/babel-loader/lib/index.js??ruleSet[1].rules[0].use!./src/js/types/Site.Controllers.MapElementController.js|bec85bc9f8ad363f0785e33dda8eee80": 234,
+      "./node_modules/.pnpm/img-optimize-loader@1.0.7_file-loader@6.2.0_webpack@5.89.0/node_modules/img-optimize-loader/dist/index.js??ruleSet[1].rules[4].use[0]!./src/img/logo.png": 713,
       "./node_modules/.pnpm/mini-css-extract-plugin@2.7.6_webpack@5.89.0/node_modules/mini-css-extract-plugin/dist/loader.js??ruleSet[1].rules[1].use[0]!./node_modules/.pnpm/css-loader@6.9.0_webpack@5.89.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/.pnpm/sass-loader@13.3.3_sass@1.69.7_webpack@5.89.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./src/scss/types/cms.scss": 388,
       "./node_modules/.pnpm/mini-css-extract-plugin@2.7.6_webpack@5.89.0/node_modules/mini-css-extract-plugin/dist/loader.js??ruleSet[1].rules[1].use[0]!./node_modules/.pnpm/css-loader@6.9.0_webpack@5.89.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/.pnpm/sass-loader@13.3.3_sass@1.69.7_webpack@5.89.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./src/scss/types/dev.scss": 283,
       "./node_modules/.pnpm/mini-css-extract-plugin@2.7.6_webpack@5.89.0/node_modules/mini-css-extract-plugin/dist/loader.js??ruleSet[1].rules[1].use[0]!./node_modules/.pnpm/css-loader@6.9.0_webpack@5.89.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/.pnpm/sass-loader@13.3.3_sass@1.69.7_webpack@5.89.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./src/scss/types/editor.scss": 694,
-      "./node_modules/.pnpm/mini-css-extract-plugin@2.7.6_webpack@5.89.0/node_modules/mini-css-extract-plugin/dist/loader.js??ruleSet[1].rules[1].use[0]!./node_modules/.pnpm/css-loader@6.9.0_webpack@5.89.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/.pnpm/sass-loader@13.3.3_sass@1.69.7_webpack@5.89.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./src/scss/types/order.scss": 663
+      "./node_modules/.pnpm/mini-css-extract-plugin@2.7.6_webpack@5.89.0/node_modules/mini-css-extract-plugin/dist/loader.js??ruleSet[1].rules[1].use[0]!./node_modules/.pnpm/css-loader@6.9.0_webpack@5.89.0/node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].use[1]!./node_modules/.pnpm/sass-loader@13.3.3_sass@1.69.7_webpack@5.89.0/node_modules/sass-loader/dist/cjs.js??ruleSet[1].rules[1].use[2]!./src/scss/types/order.scss": 663,
+      "./node_modules/font-awesome|sync|nonrecursive|/\\.(otf%7Ceot%7Cttf%7Cwoff%7Cwoff2)$/": 499,
+      "./src/img|sync|nonrecursive|/\\.(png%7Cwebp%7Cjpg%7Cjpeg%7Cgif%7Csvg)$/": 562
     },
     "usedIds": [
       234,
       283,
       318,
       388,
+      499,
       502,
+      562,
+      625,
+      654,
       663,
-      694
+      694,
+      713,
+      778
     ]
   }
 }

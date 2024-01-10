@@ -1,0 +1,15 @@
+/*!
+ * Get all of an element's parent elements up the DOM tree
+ * (c) 2019 Chris Ferdinandi, MIT License, https://gomakethings.com
+ * @param  {Node}   elem     The element
+ * @param  {String} selector Selector to match against [optional]
+ * @return {Array}           The parent elements
+ */
+
+/*!
+ * Glide.js v3.6.0
+ * (c) 2013-2022 Jędrzej Chałubek (https://github.com/jedrzejchalubek/)
+ * Released under the MIT License.
+ */
+
+/*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/facebook/regenerator/blob/main/LICENSE */
