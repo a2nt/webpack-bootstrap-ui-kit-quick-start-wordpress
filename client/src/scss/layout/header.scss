@@ -1,0 +1,29 @@
+#SiteWideMessage {
+    text-align: center;
+
+    .alert {
+        margin-bottom: 0;
+
+        .btn-close {
+            float: right;
+            margin-top: -.5rem;
+        }
+    }
+}
+
+#Header {
+    position: relative;
+    z-index: 9;
+
+    .element {
+        margin-top: 0;
+    }
+
+    .nav-container {
+        position: static;
+        display: flex;
+
+        align-items: center;
+        justify-content: flex-end;
+    }
+}
