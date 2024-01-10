@@ -9,14 +9,26 @@
 
 define('CRB_THEME_DIR', get_template_directory() . DIRECTORY_SEPARATOR);
 
+function theme_header_metadata()
+{
+    $path = get_stylesheet_directory_uri();
+    echo
+        '<link rel="shortcut icon" type="image/x-icon" href="'.$path.'/client/dist/icons/favicon.ico" />'
+        .'<link rel="apple-touch-icon" href="'.$path.'/client/dist/icons/apple-touch-icon.png" />'
+        .'<link rel="apple-touch-icon-precomposed" href="'.$path.'/client/dist/icons/apple-touch-icon-precomposed.png" />'
+        .'<meta name="msapplication-TileImage" content="'.$path.'/client/dist/icons/mstile-144x144.png" />';
+}
+
+add_action('wp_head', 'theme_header_metadata');
+
 if (! function_exists('wp_bootstrap_starter_setup')) :
-/**
- * Sets up theme defaults and registers support for various WordPress features.
- *
- * Note that this function is hooked into the after_setup_theme hook, which
- * runs before the init hook. The init hook is too late for some features, such
- * as indicating support for post thumbnails.
- */
+    /**
+     * Sets up theme defaults and registers support for various WordPress features.
+     *
+     * Note that this function is hooked into the after_setup_theme hook, which
+     * runs before the init hook. The init hook is too late for some features, such
+     * as indicating support for post thumbnails.
+     */
     function wp_bootstrap_starter_setup()
     {
         // Autoload dependencies
@@ -136,8 +148,8 @@ function ResourcesURL()
 function nl2li($str, $ordered = 0, $type = "1")
 {
     if ($ordered) {
-        $tag='ol';
-        $tag_type="type=$type";
+        $tag = 'ol';
+        $tag_type = "type=$type";
     } else {
         $tag = 'ul';
         $tag_type = null;
@@ -258,7 +270,7 @@ add_filter('wp_resource_hints', 'wp_bootstrap_starter_preload', 10, 2);
 function wp_bootstrap_starter_password_form()
 {
     global $post;
-    $label = 'pwbox-'.( empty($post->ID) ? rand() : $post->ID );
+    $label = 'pwbox-'.(empty($post->ID) ? rand() : $post->ID);
     $o = '<form action="' . esc_url(home_url('wp-login.php?action=postpass', 'login_post')) . '" method="post">
     <div class="d-block mb-3">' . __("To view this protected post, enter the password below:", "wp-bootstrap-starter") . '</div>
     <div class="form-group form-inline"><label for="' . $label . '" class="mr-2">' . __("Password:", "wp-bootstrap-starter") . ' </label><input name="post_password" id="' . $label . '" type="password" size="20" maxlength="20" class="form-control mr-2" /> <input type="submit" name="Submit" value="' . esc_attr__("Submit", "wp-bootstrap-starter") . '" class="btn btn-primary"/></div>
